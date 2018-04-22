@@ -5,7 +5,6 @@ import os
 from glob import glob
 
 import face_recognition
-from slugify import slugify
 from tqdm import tqdm
 
 from utils import init_logging, get_arguments
@@ -16,7 +15,10 @@ logger = logging.getLogger(__name__)
 def get_script_arguments():
     parser = argparse.ArgumentParser(description='Detect the faces on many images.')
     parser.add_argument('--images_dir', required=True, help='The directory with the images.')
+    parser.add_argument('--output_filename', required=True, help='The filename that will contain '
+                                                                 'the face detection results.')
     parser.add_argument('--batch_size', default=8, type=int, help='Batch size used in the model.')
+    parser.add_argument('--extension', default='png', help='Extension of the images. Default is png.')
     args = get_arguments(parser)
     logger.info('Script inputs: {}.'.format(args))
     return args
@@ -94,16 +96,13 @@ def run_single(image_path: str):
 
 class DetectFaces:
 
-    def __init__(self, images_dir: str, batch_size: int, ext: str = 'png'):
+    def __init__(self, images_dir: str, batch_size: int, persistence_filename: str, ext: str = 'png'):
         # Because it can be long to detect all the faces.
-        self.images_dir = images_dir
         self.batch_size = batch_size
-        self.persistence_filename = slugify(self.images_dir) + '.log'
-        self.persistence = Persistence(self.persistence_filename)
-        self.ext = ext
-        self.glob_syntax = self.images_dir + '/**/*.{}'.format(self.ext)
+        self.persistence = Persistence(persistence_filename)
+        self.glob_syntax = images_dir + '/**/*.{}'.format(ext)
         self.image_paths = sorted(glob(self.glob_syntax, recursive=True))
-        logger.info('Running face detection on {}.'.format(self.images_dir))
+        logger.info('Running face detection on {}.'.format(images_dir))
         logger.info('Inferred GLOB syntax is {}.'.format(self.glob_syntax))
         logger.info('Batch size used for the CNN model is {}.'.format(self.batch_size))
         logger.info('Found {} image files.'.format(len(self.image_paths)))
@@ -149,8 +148,8 @@ class DetectFaces:
 
 def main():
     init_logging()
-    arguments = get_script_arguments()
-    detect_faces = DetectFaces(arguments.images_dir, arguments.batch_size)
+    args = get_script_arguments()
+    detect_faces = DetectFaces(args.images_dir, args.batch_size, args.output_filename, args.ext)
     detect_faces.run_detection()
 
 
