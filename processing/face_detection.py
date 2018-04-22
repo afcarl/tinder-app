@@ -149,7 +149,7 @@ class DetectFaces:
 def main():
     init_logging()
     args = get_script_arguments()
-    detect_faces = DetectFaces(args.images_dir, args.batch_size, args.output_filename, args.ext)
+    detect_faces = DetectFaces(args.images_dir, int(args.batch_size), args.output_filename, args.ext)
     detect_faces.run_detection()
 
 
