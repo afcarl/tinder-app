@@ -49,7 +49,7 @@ def main():
     resize_images(input_base_dir=args.input_dir,
                   output_base_dir=args.output_dir,
                   ext=args.extension,
-                  resize_dims=[int(v) for v in list(args.resize_dims)])
+                  resize_dims=[int(v) for v in args.resize_dims.split(',')])
 
 
 if __name__ == '__main__':
