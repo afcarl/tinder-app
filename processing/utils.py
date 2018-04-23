@@ -3,6 +3,16 @@ import datetime
 import logging
 
 
+def parallel_function(f, sequence, num_threads=None):
+    from multiprocessing import Pool
+    pool = Pool(processes=num_threads)
+    result = pool.map(f, sequence)
+    cleaned = [x for x in result if x is not None]
+    pool.close()
+    pool.join()
+    return cleaned
+
+
 def init_logging():
     format_str = '%(asctime)12s - %(threadName)12s - %(name)18s - %(levelname)s - %(message)s'
     formatter = logging.Formatter(format_str)
