@@ -114,7 +114,7 @@ class DetectFaces:
         for batch_image_paths in bar:
             if not self.persistence.has_processed_images(batch_image_paths):
                 batch_face_locations = run_batch(batch_image_paths)
-                bar.set_description('{} ... {}'.format(batch_image_paths[0], batch_image_paths[-1]))
+                # bar.set_description('{} ... {}'.format(batch_image_paths[0], batch_image_paths[-1]))
                 self.persist_batch(batch_image_paths, batch_face_locations)
             else:
                 logger.info('[{}] already persisted. Skipping.'.format(str(batch_image_paths)))
@@ -149,7 +149,7 @@ class DetectFaces:
 def main():
     init_logging()
     args = get_script_arguments()
-    detect_faces = DetectFaces(args.images_dir, int(args.batch_size), args.output_filename, args.ext)
+    detect_faces = DetectFaces(args.images_dir, int(args.batch_size), args.output_filename, args.extension)
     detect_faces.run_detection()
 
 
