@@ -1,7 +1,7 @@
 
 IMAGES_DIR=samples
 OUTPUT_DIR=output_dataset
-RESIZE_DIMS="(256,256)"
+RESIZE_DIMS="512,512"
 EXT=png
 BATCH_SIZE=8
 
