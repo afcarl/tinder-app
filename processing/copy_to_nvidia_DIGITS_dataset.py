@@ -2,6 +2,7 @@ import argparse
 import logging
 import os
 import shutil
+from tqdm import tqdm
 
 from utils import init_logging, get_arguments
 
@@ -18,11 +19,13 @@ def get_script_arguments():
 
 
 def copy(files_to_copy: list, output_dir: str):
-    for file_to_copy in files_to_copy:
-        image_filename, profile_id, city = file_to_copy.split('/')[-1:-3]
-        output_filename = os.path.join(output_dir, city, profile_id, image_filename)
+    for file_to_copy in tqdm(files_to_copy, desc='copy'):
+        city, age, profile_id, image_filename = file_to_copy.split('/')[-4:]
+        output_filename = os.path.join(output_dir, city, age, profile_id, image_filename)
+        if not os.path.exists(os.path.dirname(output_filename)):
+            os.makedirs(os.path.dirname(output_filename))
         shutil.copy(src=file_to_copy, dst=output_filename)
-        logger.info('COPY: {} to {}'.format(file_to_copy, output_filename))
+        # logger.info('COPY: {} to {}'.format(file_to_copy, output_filename))
 
 
 def main():
