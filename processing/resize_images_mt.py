@@ -42,7 +42,7 @@ def resize_images(input_base_dir, output_base_dir, ext='png', resize_dims=(512, 
     logger.info(len(image_paths))
     # Create a pool of processes. By default, one is created for each CPU in your machine.
 
-    with concurrent.futures.ProcessPoolExecutor(6) as executor:
+    with concurrent.futures.ProcessPoolExecutor(os.cpu_count()) as executor:
 
         futures = {
             executor.submit(resize, image_path, input_base_dir, output_base_dir, resize_dims): image_path for
