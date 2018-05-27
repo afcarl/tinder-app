@@ -2,9 +2,8 @@ import argparse
 import concurrent.futures
 import logging
 import os
-from glob import glob
-
 from PIL import Image
+from glob import glob
 from tqdm import tqdm
 
 from utils import init_logging, get_arguments
@@ -26,14 +25,15 @@ def get_script_arguments():
 def resize(image_path, input_base_dir, output_base_dir, resize_dims):
     fp = Image.open(image_path)
     new_image_path = image_path.replace(input_base_dir, output_base_dir)
-    new_dir_image = os.path.dirname(new_image_path)
-    fp = fp.resize(resize_dims, Image.ANTIALIAS)
-    try:
-        if not os.path.exists(new_dir_image):
-            os.makedirs(new_dir_image)
-    except FileExistsError:
-        pass
-    fp.save(new_image_path)
+    if not os.path.isfile(new_image_path):
+        new_dir_image = os.path.dirname(new_image_path)
+        fp = fp.resize(resize_dims, Image.ANTIALIAS)
+        try:
+            if not os.path.exists(new_dir_image):
+                os.makedirs(new_dir_image)
+        except FileExistsError:
+            pass
+        fp.save(new_image_path)
 
 
 def resize_images(input_base_dir, output_base_dir, ext='png', resize_dims=(512, 512)):
